@@ -10,7 +10,7 @@ function EditList() {
 
     useEffect(() => {
         const fetchUser = async () => {
-            const res = await getUsers(1); // Reqres has no /user/:id, so fetch all and filter
+            const res = await getUsers(1);
             const found = res.data.data.find(u => u.id === parseInt(id));
             if (found) setUser(found);
         };
@@ -19,7 +19,12 @@ function EditList() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await updateUser(id, user); // mock success
+        await updateUser(id, user);
+
+        const updates = JSON.parse(sessionStorage.getItem('userUpdates') || '{}');
+        updates[id] = user;
+        sessionStorage.setItem('userUpdates', JSON.stringify(updates));
+
         navigate('/users', { state: { updatedUser: { ...user, id: parseInt(id) } } });
     };
 

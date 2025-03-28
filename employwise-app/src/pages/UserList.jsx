@@ -15,7 +15,11 @@ function UserList() {
 
         if (updated && !updatedUserRef.current) {
             updatedUserRef.current = updated;
-            setUsers(prev => prev.map(u => u.id === updated.id ? { ...u, ...updated } : u));
+
+            setUsers(prev =>
+                prev.map(u => u.id === updated.id ? { ...u, ...updated } : u)
+            );
+
             navigate(location.pathname, { replace: true });
         } else {
             fetchUsers();
@@ -28,7 +32,15 @@ function UserList() {
 
     const fetchUsers = async () => {
         const res = await getUsers(page);
-        setUsers(res.data.data);
+        const originalUsers = res.data.data;
+
+        const storedUpdates = JSON.parse(sessionStorage.getItem('userUpdates') || '{}');
+
+        const mergedUsers = originalUsers.map(user =>
+            storedUpdates[user.id] ? { ...user, ...storedUpdates[user.id] } : user
+        );
+
+        setUsers(mergedUsers);
     };
 
     const handleDelete = async (id) => {
@@ -41,13 +53,13 @@ function UserList() {
     };
 
     return (
-        <div className="relative min-h-screen bg-gradient-to-b from-sky-100 to-blue-200 dark:from-gray-900 dark:to-gray-800 text-black dark:text-white transition-all duration-500 ease-in-out">
+        <div className="relative min-h-screen overflow-x-hidden bg-gradient-to-b from-sky-100 to-blue-200 dark:from-gray-900 dark:to-gray-800 text-black dark:text-white transition-all duration-500 ease-in-out">
+
             <Header />
 
-            {/* Slider Arrows */}
             <button
                 onClick={() => setPage(p => Math.max(p - 1, 1))}
-                className="fixed top-1/2 left-4 transform -translate-y-1/2 bg-white/80 dark:bg-gray-700/70 backdrop-blur-md hover:scale-110 transition-all duration-300 shadow-xl text-xl text-black dark:text-white rounded-full w-12 h-12 flex items-center justify-center z-50"
+                className="fixed top-1/2 left-4 transform -translate-y-1/2 bg-gray-500 dark:bg-gray-700/70 backdrop-blur-md hover:scale-110 transition-all duration-300 shadow-xl text-xl text-black dark:text-white rounded-full w-12 h-12 flex items-center justify-center z-50"
                 title="Previous Page"
             >
                 ❮
@@ -55,13 +67,12 @@ function UserList() {
 
             <button
                 onClick={() => setPage(p => p + 1)}
-                className="fixed top-1/2 right-4 transform -translate-y-1/2 bg-white/80 dark:bg-gray-700/70 backdrop-blur-md hover:scale-110 transition-all duration-300 shadow-xl text-xl text-black dark:text-white rounded-full w-12 h-12 flex items-center justify-center z-50"
+                className="fixed top-1/2 right-4 transform -translate-y-1/2 bg-gray-500 dark:bg-gray-700/70 backdrop-blur-md hover:scale-110 transition-all duration-300 shadow-xl text-xl text-black dark:text-white rounded-full w-12 h-12 flex items-center justify-center z-50"
                 title="Next Page"
             >
                 ❯
             </button>
 
-            {/* User Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6 mt-4 transition-all">
                 {users.map(user => (
                     <div
