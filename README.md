@@ -119,15 +119,10 @@ src/
 
 ---
 
-## 🌐 Hosted Link (Optional)
-
-If hosted on Vercel, Netlify, etc., add the link here.
-
+## 🌐 Hosted Link :
 ```text
 https://employwise-demo.vercel.app/
 ```
-
----
 
 ## 📌 Notes
 
