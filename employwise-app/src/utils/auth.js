@@ -1,7 +1,7 @@
-export const getToken = () => localStorage.getItem('token');
-export const setToken = (token) => localStorage.setItem('token', token);
-export const removeToken = () => localStorage.removeItem('token');
+export const getToken = () => sessionStorage.getItem('token');
+export const setToken = (token) => sessionStorage.setItem('token', token);
+export const removeToken = () => sessionStorage.removeItem('token');
 export const logout = () => {
-    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
     window.location.href = '/';
 };  
